@@ -29,5 +29,5 @@ Próximas mejoras posibles:
 
 ## 🎬 Ejemplo de ejecución:
 <p align="center">
-<img width="550 " height="527" alt="image" align="center" src="https://github.com/user-attachments/assets/eec229cb-3f56-4b42-a67f-afe8575961fb" />
+  <img width="550" height="530" alt="image" src="https://github.com/user-attachments/assets/fdf3a319-1d42-4a7c-93c7-6ad4d988430b" />
 </p>
