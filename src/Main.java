@@ -1,13 +1,16 @@
+import java.io.IOException;
+import java.util.Properties;
 import java.util.Scanner;
 
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         var teclado = new Scanner(System.in);
         int opci;
         double razon;
         double tasaDeCambio;
         double dinero;
         double resultado;
+        Tasa consultar = new Tasa();
 
         do{
             menu();
@@ -18,15 +21,16 @@ public class Main {
 
             }else if (opci>0 && opci<9){
                 System.out.println("Cantidad de dinero a convertir:");
-                dinero = Math.abs(teclado.nextDouble());
+                dinero = Math.abs (Double.valueOf(teclado.next()
+                        .trim().replace(',','.')));
 
                 if(opci<3){
-                    razon = Tasa.consultarTasa("USD","ARS");
+                    razon = consultar.consultarTasa("USD","ARS");
                 } else if (opci<5){
-                    razon = Tasa.consultarTasa("USD","BRL");
+                    razon =  consultar.consultarTasa("USD","BRL");
                 } else if (opci<7){
-                    razon = Tasa.consultarTasa("USD", "COP");
-                } else razon = Tasa.consultarTasa("ARS","BRL");
+                    razon =  consultar.consultarTasa("USD", "COP");
+                } else razon = consultar.consultarTasa("ARS","BRL");
 
                 tasaDeCambio = opci%2 == 0? (1 / razon) : razon;
                 resultado = dinero * tasaDeCambio;
@@ -67,7 +71,8 @@ public class Main {
         }while (opci!=0);
     }
 
-    public static void menu(){
+
+    public static void menu() throws IOException {
         System.out.print("""
                 ****************************************
                 ¡Bienvenido al conversor de Monedas!
