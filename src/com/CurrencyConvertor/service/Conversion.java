@@ -1,6 +1,6 @@
-package com.CurrencyConverter.service;
+package com.CurrencyConvertor.service;
 
-import com.CurrencyConverter.model.Currency;
+import com.CurrencyConvertor.model.Currency;
 
 public class Conversion {
     private final Currency currencyA;

@@ -1,6 +1,6 @@
-package com.CurrencyConverter.model;
+package com.CurrencyConvertor.model;
 
-import com.CurrencyConverter.service.Conversion;
+import com.CurrencyConvertor.service.Conversion;
 import com.google.gson.*;
 import java.io.*;
 import java.net.URI;
