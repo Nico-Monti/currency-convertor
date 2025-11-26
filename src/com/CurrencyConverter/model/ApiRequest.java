@@ -13,10 +13,10 @@ import java.util.HashMap;
 import java.util.Properties;
 
 public class ApiRequest {
-    private Properties prop = this.getProperties();
-    private final String API_KEY = prop.getProperty("API_KEY") ;;
-    private HttpClient client;
-    private Gson gson;
+    private final Properties prop = this.getProperties();
+    private final String API_KEY = prop.getProperty("API_KEY") ;
+    private final HttpClient client;
+    private final Gson gson;
 
     public ApiRequest(){
         client = HttpClient.newHttpClient();
@@ -33,21 +33,17 @@ public class ApiRequest {
         }
         return prop;
     }
-    /************************************************************/
 
-    public Conversion conversion(String currency, String otherCurrency, double amount) {
-        Conversion conversion;
+    public Conversion conversion(Currency currency, Currency otherCurrency, double amount) {
         LocalDateTime dateTime = LocalDateTime.now();
-        DateTimeFormatter formatTime = DateTimeFormatter.ofPattern("dd-MM-yyyy, HH:mm:ss");
-
-        URI adress = URI.create("https://v6.exchangerate-api.com/v6/"+API_KEY+"/pair/"+currency+"/"+otherCurrency+"/"+amount);
+        DateTimeFormatter formatTime = DateTimeFormatter.ofPattern("dd/MM/yyyy, HH:mm:ss");
+        URI adress = URI.create("https://v6.exchangerate-api.com/v6/"+API_KEY+"/pair/"+currency.getCode()+"/"+otherCurrency.getCode()+"/"+amount);
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(adress)
                 .GET()
                 .build();
-
         try {
-            HttpResponse<String> response = null;
+            HttpResponse<String> response;
             response = client
                     .send(request, HttpResponse.BodyHandlers.ofString());
 
@@ -61,60 +57,12 @@ public class ApiRequest {
         }
     }
 
-
-
-    public double getExchangeRate(String currency, String otherCurrency) {
-        URI adress = URI.create("https://v6.exchangerate-api.com/v6/"+API_KEY+"/pair/"+currency+"/"+otherCurrency);
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(adress)
-                .GET()
-                .build();
-
-        try {
-            HttpResponse<String> response = null;
-            response = client
-                    .send(request, HttpResponse.BodyHandlers.ofString());
-
-            RecordCurrency monedaRecord = gson.fromJson(response.body(), RecordCurrency.class);
-            return monedaRecord.conversion_rate();
-        } catch (IOException | InterruptedException e) {
-            throw new RuntimeException("Error: "+ e.getMessage());
-        }
-    }
-
-
-    public void supportedCodes(){
-        URI adress = URI.create("https://v6.exchangerate-api.com/v6/"+API_KEY+"/codes");
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(adress)
-                .GET()
-                .build();
-
-        try {
-            HttpResponse<String> response = null;
-            response = client
-                    .send(request, HttpResponse.BodyHandlers.ofString());
-            SupportedCodes currencies = gson.fromJson(response.body(), SupportedCodes.class);
-
-            JsonElement element = JsonParser.parseString(response.body());
-            JsonObject object = element.getAsJsonObject();
-
-            FileWriter escritura = new FileWriter("supportedCodes.json");
-            escritura.write(gson.toJson(object));
-            escritura.close();
-        } catch (IOException | InterruptedException e) {
-            System.out.println("Error: "+ e.getMessage());
-            e.getStackTrace();
-        }
-    }
-
-
-
-    public HashMap<String,String> getSupportedCodes() {
+    public HashMap<String,String> getSupportedCurrencyCodesAsMap() {
         int bina;
         String json = "";
         try {
-            File file = new File(System.getProperty("user.dir") + "\\supportedCodes.json");
+            //ReaderWriter.read();
+            File file = new File(System.getProperty("user.dir") + "\\supportedCurrencyCodes.json");
             FileReader reader = new FileReader(file);
             bina = reader.read();
             while (bina != -1) {
@@ -129,4 +77,50 @@ public class ApiRequest {
         SupportedCodes currencies = gson.fromJson(json, SupportedCodes.class);
         return (HashMap<String, String>) currencies.asMap();
     }
+
+
+    public void supportedCurrencyCodes(){
+        URI adress = URI.create("https://v6.exchangerate-api.com/v6/"+API_KEY+"/codes");
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(adress)
+                .GET()
+                .build();
+
+
+        try {
+            HttpResponse<String> response;
+            response = client
+                    .send(request, HttpResponse.BodyHandlers.ofString());
+
+            JsonElement element = JsonParser.parseString(response.body());
+            JsonObject object = element.getAsJsonObject();
+
+            FileWriter writer = new FileWriter("supportedCurrencyCodes.json");
+            writer.write(gson.toJson(object));
+            writer.close();
+        } catch (IOException | InterruptedException e) {
+            System.out.println("Error: "+ e.getMessage());
+            e.getStackTrace();
+        }
+    }
+
+    //    Returns the exchange Rate between two currencies
+//    public double getExchangeRate(String currency, String otherCurrency) {
+//        URI adress = URI.create("https://v6.exchangerate-api.com/v6/"+API_KEY+"/pair/"+currency+"/"+otherCurrency);
+//        HttpRequest request = HttpRequest.newBuilder()
+//                .uri(adress)
+//                .GET()
+//                .build();
+//
+//        try {
+//            HttpResponse<String> response = null;
+//            response = client
+//                    .send(request, HttpResponse.BodyHandlers.ofString());
+//
+//            RecordCurrency monedaRecord = gson.fromJson(response.body(), RecordCurrency.class);
+//            return monedaRecord.conversion_rate();
+//        } catch (IOException | InterruptedException e) {
+//            throw new RuntimeException("Error: "+ e.getMessage());
+//        }
+//    }
 }

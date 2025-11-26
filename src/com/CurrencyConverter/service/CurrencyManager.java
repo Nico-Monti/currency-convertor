@@ -1,43 +1,92 @@
 package com.CurrencyConverter.service;
 
 import com.CurrencyConverter.model.ApiRequest;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.util.ArrayList;
+import com.CurrencyConverter.model.SupportedCodes;
+import com.CurrencyConverter.util.ReaderWriter;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
+import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Stack;
 
 public class CurrencyManager {
-    private Map<String, String> availableCurrencies = new HashMap<>();;
-    private ArrayList<Conversion> conversions= new ArrayList<>();
+    private Map<String, String> supportedCurrencyCodes = new HashMap<>();
+    private final Stack<Conversion> conversions = new Stack<>();
+
+    private static final int MAX_HOURS = 6;
+    private static final String PATH_SUPPORTED_CODES = System.getProperty("user.dir")+"\\supportedCurrencyCodes.json";
+    private static final String PATH_CONVERSIONS = System.getProperty("user.dir")+"\\conversions.txt";
 
     public void getStarted(){
-        //Iniciar availableCurrencies
-        // si no tengo el .json o si la fecha del .json no es de hoy lo consulto de nuevo
         var request = new ApiRequest();
-        try{
-            File file = new File(System.getProperty("user.dir")+"\\supportedCodes.json");
+        try {
+            File file = new File(PATH_SUPPORTED_CODES);
             FileReader reader = new FileReader(file);
-            // System.out.println(file.getAbsoluteFile().lastModified());
-            availableCurrencies = request.getSupportedCodes();
-        }catch (FileNotFoundException e) {
-            System.out.println("Couldn't find any data of the available codes, requesting API...");
-            request.supportedCodes();
-            getStarted();
+
+            long lastModifiedTime = file.lastModified();
+            long currentTime = System.currentTimeMillis();
+            int milisecondsByDay = 86400000;
+            int differenceInHours = (int) (((currentTime-lastModifiedTime)/milisecondsByDay)*24);
+
+            if(differenceInHours >= MAX_HOURS || file.length()==0){
+                System.out.println("It seems that the supported currencies codes are outdated. Requesting updated data to the API... ");
+                request.supportedCurrencyCodes();
+            }
+
+        }catch (FileNotFoundException e){
+            System.out.println("Couldn't find any data of the supported currency codes. Requesting to the API... ");
+            request.supportedCurrencyCodes();
         }
-        //si tengo el .json y la fecha es de hoy. Lo cargo en hashMap
+
+        supportedCurrencyCodes = this.getSupportedCurrencyCodesMap();
     }
 
-    public Map<String, String> getAvailableCurrencies() {
-        return availableCurrencies;
+    public Stack<Conversion> getConversions() {
+        return conversions;
+    }
+
+    public Map<String, String> getSupportedCurrencyCodes() {
+        return supportedCurrencyCodes;
+    }
+
+    public Map<String,String> getSupportedCurrencyCodesMap() {
+        File supportedCodesJSON = new File(PATH_SUPPORTED_CODES);
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        String supportedCodes = ReaderWriter.readFile(supportedCodesJSON);
+        SupportedCodes currencies = gson.fromJson(supportedCodes, SupportedCodes.class);
+        this.supportedCurrencyCodes = currencies.asMap();
+        return this.supportedCurrencyCodes;
     }
 
     public void showSupportedCurrencies(){
-        System.out.println("smth");
+        if(!this.supportedCurrencyCodes.isEmpty()){
+            System.out.println(" Currency code | Currency name");
+            supportedCurrencyCodes.forEach((k, v)-> System.out.printf("     [%s]     |  %s%n",k,v));
+        } else {
+            System.out.println("MAPA VACIO");
+        }
+        System.out.println();
+    }
+
+    public void showConversionsFile(){
+        File conversions = new File(PATH_CONVERSIONS);
+        String recoveredFile = ReaderWriter.readFile(conversions);
+        if(recoveredFile.isEmpty()){
+            System.out.println("Try doing some conversions first...");
+        }
+        System.out.println(recoveredFile);
     }
 
     public void addConversion(Conversion conversion){
-        System.out.println("pepe");
+        this.conversions.addFirst(conversion);
     }
+
+    public void saveConversionMade(){
+        File conversionsMade = new File(PATH_CONVERSIONS);
+        String recoveredFile = ReaderWriter.readFile(conversionsMade);
+        ReaderWriter.writeConversionsFile(recoveredFile, this.conversions);
+    }
+
 }

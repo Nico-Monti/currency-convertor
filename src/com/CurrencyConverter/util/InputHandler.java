@@ -7,14 +7,13 @@ public class InputHandler {
     private static final Scanner kb = new Scanner(System.in);
 
     private static final int MIN_OPTION = 1;
-    private static final int MAX_OPTION = 5;
-
+    private static final int MAX_OPTION = 4;
 
     public int readMainOption(){
         System.out.print(":");
         try {
             String input = kb.nextLine().trim();
-            int temp = Integer.valueOf(input);
+            int temp = Integer.parseInt(input);
             if(temp>=MIN_OPTION && temp<=MAX_OPTION){
                 return temp;
             }else{
@@ -32,13 +31,12 @@ public class InputHandler {
     public String readCurrency(CurrencyManager manager){
         System.out.print(":");
         String input = kb.nextLine().trim().toUpperCase();
-        if(input.equals("1") || (input.length()==3 && input.chars().allMatch(Character::isLetter) && manager.getAvailableCurrencies().get(input)!=null)){
+        if(input.equals("1") || (input.length()==3 && input.chars().allMatch(Character::isLetter) && manager.getSupportedCurrencyCodes().get(input)!=null)){
             return input;
         }else{
             System.out.println("Choose a supported currency! For example: USD, EUR, etc.");
             return readCurrency(manager);
         }
-
     }
 
     public double readMoney(){
@@ -50,14 +48,12 @@ public class InputHandler {
                 System.out.println("Type a number!");
                 return readMoney();
             }
-            money = Double.valueOf(input);
+            money = Double.parseDouble(input);
 
         } catch (NumberFormatException e) {
-            System.out.println("ERROR: "+e.getMessage());;
+            System.out.println("ERROR: "+e.getMessage());
             e.getStackTrace();
         }
         return money;
     }
-
-
 }

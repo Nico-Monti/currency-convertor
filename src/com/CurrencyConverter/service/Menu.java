@@ -1,22 +1,19 @@
 package com.CurrencyConverter.service;
 import com.CurrencyConverter.model.ApiRequest;
+import com.CurrencyConverter.model.Currency;
 import com.CurrencyConverter.util.InputHandler;
 
 public class Menu {
-    private static int option;
-    private static InputHandler handler;
+    private static CurrencyManager manager;
     private static String currencyCodeA;
     private static String currencyCodeB;
-    private static CurrencyManager manager;
-    private static ApiRequest apiRequest;
-    private static double rateChange;
     private static double amountMoney;
-    private static double conversionResult;
+    private static InputHandler handler;
+    private static int option;
 
     public Menu(){
         manager = new CurrencyManager();
         handler = new InputHandler();
-        apiRequest = new ApiRequest();
     }
 
     public void mainMenu(){
@@ -29,58 +26,69 @@ public class Menu {
                     exchangeCurrencies();
                     break;
                 case 2:
-                    //showHistory
+                    manager.showConversionsFile();
                     break;
                 case 3:
-                    //showAvailableCurrencies
+                    manager.showSupportedCurrencies();
                     break;
                 case 4:
-                    //hardcoded example
+                    System.out.println("\nLeaving the program..\n" +
+                            "Thanks :)");
                 default:
                     break;
             }
-        }while (option!=5);
+        }while (option!=4);
     }
 
     private void showOptions(){
         System.out.print("""
-                \n******************************************
+                ******************************************
                             Currency converter
                 
                 1) Exchange currencies
                 2) Show the conversions history.
                 3) View supported currencies.
-                4) Show conversion examples.
-                5) Exit
+                4) Exit
                 
                 Select an option""");
     }
 
     private void exchangeCurrencies(){
-        Conversion conversion = new Conversion();
+        ApiRequest apiRequest = new ApiRequest();
+        Conversion conversion;
+        System.out.println("\n******************************************\n");
         System.out.print("""
                 Enter 1 to return to the main menu or
                 Search currency code
                 """);
         currencyCodeA = handler.readCurrency(manager);
-        if(currencyCodeA.equals("1")) mainMenu();
+        if(currencyCodeA.equals("1")){
+            System.out.println("Cancelling...\n");
+            mainMenu();
+        }
 
         System.out.print("Search another currency code");
         currencyCodeB = handler.readCurrency(manager);
         if (currencyCodeB.equals("1")) mainMenu();
 
         if(currencyCodeA.equals(currencyCodeB)){
-            System.out.println("Currencies must be different...\n**********************");
+            System.out.println("Currencies must be different!");
             exchangeCurrencies();
         }
 
-        System.out.print(String.format("Amount of money that you want to convert from [%s] to [%s]",currencyCodeA,currencyCodeB));
+        Currency currencyA = new Currency(currencyCodeA, manager.getSupportedCurrencyCodes().get(currencyCodeA));
+        Currency currencyB = new Currency(currencyCodeB, manager.getSupportedCurrencyCodes().get(currencyCodeB));
+
+        System.out.printf("Amount of money that you want to convert from [%s] to [%s]",currencyA.getCode(),currencyB.getCode());
         amountMoney = handler.readMoney();
 
-        conversion = apiRequest.conversion(currencyCodeA, currencyCodeB, amountMoney);
+        conversion = apiRequest.conversion(currencyA, currencyB, amountMoney);
         manager.addConversion(conversion);
 
+        System.out.println("Result: ");
         System.out.print(conversion);
+        manager.saveConversionMade();
+        System.out.println();
         mainMenu();
     }
 }
