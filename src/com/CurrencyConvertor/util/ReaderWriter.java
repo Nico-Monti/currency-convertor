@@ -1,6 +1,6 @@
-package com.CurrencyConverter.util;
+package com.CurrencyConvertor.util;
 
-import com.CurrencyConverter.service.Conversion;
+import com.CurrencyConvertor.service.Conversion;
 
 import java.io.*;
 import java.util.Stack;

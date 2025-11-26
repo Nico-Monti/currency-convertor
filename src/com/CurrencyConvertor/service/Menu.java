@@ -1,7 +1,7 @@
-package com.CurrencyConverter.service;
-import com.CurrencyConverter.model.ApiRequest;
-import com.CurrencyConverter.model.Currency;
-import com.CurrencyConverter.util.InputHandler;
+package com.CurrencyConvertor.service;
+import com.CurrencyConvertor.model.ApiRequest;
+import com.CurrencyConvertor.model.Currency;
+import com.CurrencyConvertor.util.InputHandler;
 
 public class Menu {
     private static CurrencyManager manager;

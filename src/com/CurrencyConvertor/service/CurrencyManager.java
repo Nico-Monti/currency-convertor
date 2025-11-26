@@ -1,8 +1,8 @@
-package com.CurrencyConverter.service;
+package com.CurrencyConvertor.service;
 
-import com.CurrencyConverter.model.ApiRequest;
-import com.CurrencyConverter.model.SupportedCodes;
-import com.CurrencyConverter.util.ReaderWriter;
+import com.CurrencyConvertor.model.ApiRequest;
+import com.CurrencyConvertor.model.SupportedCodes;
+import com.CurrencyConvertor.util.ReaderWriter;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 

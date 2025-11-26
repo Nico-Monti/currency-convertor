@@ -1,6 +1,6 @@
-package com.CurrencyConverter.util;
+package com.CurrencyConvertor.util;
 
-import com.CurrencyConverter.service.CurrencyManager;
+import com.CurrencyConvertor.service.CurrencyManager;
 import java.util.Scanner;
 
 public class InputHandler {
