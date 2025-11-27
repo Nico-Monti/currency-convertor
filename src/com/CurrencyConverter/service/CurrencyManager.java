@@ -1,5 +1,6 @@
 package com.CurrencyConverter.service;
 
+import com.CurrencyConverter.model.Currency;
 import com.CurrencyConverter.model.ExchangeRateApiClient;
 import com.CurrencyConverter.model.CurrencyCodesRecord;
 import com.CurrencyConverter.util.FileManager;
@@ -13,7 +14,7 @@ import java.util.Stack;
 
 public class CurrencyManager {
     private Map<String, String> supportedCurrencyCodes = new HashMap<>();
-    private final Stack<Conversion> conversions = new Stack<>();
+    private Stack<Conversion> conversions = new Stack<>();
 
     private static final int MAX_HOURS = 6;
     private static final String PATH_SUPPORTED_CODES = System.getProperty("user.dir")+"\\supportedCurrencyCodes.json";
@@ -70,6 +71,16 @@ public class CurrencyManager {
         System.out.println();
     }
 
+    public Conversion convertCurrencies(Currency from, Currency to, double amount){
+        ExchangeRateApiClient apiClient = new ExchangeRateApiClient();
+        return apiClient.conversion(from, to, amount);
+    }
+
+    public double exchangeRate(Currency from, Currency to){
+        ExchangeRateApiClient apiClient = new ExchangeRateApiClient();
+        return apiClient.getExchangeRate(from.getCode(), to.getCode());
+    }
+
     public void showConversionsFile(){
         File conversions = new File(PATH_CONVERSIONS);
         String recoveredFile = FileManager.readFile(conversions);
@@ -88,5 +99,4 @@ public class CurrencyManager {
         String recoveredFile = FileManager.readFile(conversionsMade);
         FileManager.writeConversionsFile(recoveredFile, this.conversions);
     }
-
 }

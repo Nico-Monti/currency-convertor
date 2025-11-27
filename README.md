@@ -47,52 +47,26 @@ config:
     fontSize: '17px'
 ---
 classDiagram
-    Menu -- InputHandler
-    Menu -- ExchangeRateApiClient
-    CurrencyManager -- ExchangeRateApiClient
-    CurrencyManager -- FileManager
-    CurrencyManager -- Conversion
-    CurrencyManager -- Menu
+    Menu ..> InputHandler
+    Menu *-- CurrencyManager
     
+    CurrencyManager ..> ExchangeRateApiClient
+    CurrencyManager ..> FileManager
+    CurrencyManager o-- Conversion
     ExchangeRateApiClient -- CurrencyCodes
-    Conversion -- Currency
+    Conversion *-- Currency
     
-    
-    class Currency {
-        - String code
-        - String name
-        + getCode() String
-        + getName() String
-        + toString() String
-    }
-
-    class ExchangeRateApiClient {
-        - String apiKey
-        - HttpClient client
-        - Gson gson
-        - Properties props
-
-        + ExchangeRateApiClient()
-        - loadProperties() Properties 
-        + convert(Currency from, Currency to, double amount) Conversion 
-        + fetchSupportedCodes() Map~String, String~
-    }
-
-    class CurrencyCodes {
-        <<Record>>
-        List~List~String~~ supported_codes
-        + asMap() Map~String, String~ 
-    }
-
-    class Conversion {
-        - Currency fromCurrency
+    class Menu {
+        - CurrencyManager manager
+        - String codeA
+        - String codeB
         - double amount
-        - Currency toCurrency
-        - double result
-        - String date
+        - int option
 
-        + Conversion(Currency from, double amount, Currency to, double result, String date)
-        + toString() String 
+        + Menu()
+        + mainMenu() void
+        + showOptions() void
+        + convertCurrencyMenu() void
     }
 
     class CurrencyManager {
@@ -103,30 +77,58 @@ classDiagram
         - String PATH_CONVERSIONS$
 
         + void start()
-        + getConversions() Stack~Conversion~ 
-        + getSupportedCodes() Map~String, String~ 
-        + showSupportedCurrencies() void 
-        + showConversionsFromFile() void 
-        + addConversion(Conversion c) void 
-        + saveConversion() void 
+        + getConversions() Stack~Conversion~
+        + getSupportedCodes() Map~String, String~
+        + addConversion(Conversion c) void
+        + convertCurrencies(Currency from, Currency to, double amount) Conversion
+        + exchangeRate(Currency from, Currency to) double
+        + saveConversion() void
+        + showSupportedCurrencies() void
+        + showConversionsFromFile() void
+        
     }
 
-    class Menu {
-        - CurrencyManager manager
-        - String codeA
-        - String codeB
+    class Conversion {
+        - Currency fromCurrency
         - double amount
-        - InputHandler handler
-        - int option
+        - Currency toCurrency
+        - double result
+        - String date
 
-        + Menu()
-        + mainMenu() void
-        + howOptions() void
-        + convertCurrency() void
+        + Conversion(Currency from, double amount, Currency to, double result, String date)
+        + toString() String
+    }
+    
+    class Currency {
+        - String code
+        - String name
+        
+        + getCode() String
+        + getName() String
+        + toString() String
+    }
+
+    class ExchangeRateApiClient {
+        - String apiKey
+        - HttpClient client
+        - Gson gson
+        - Properties props
+        
+        + ExchangeRateApiClient()
+        - loadProperties() Properties 
+        + convert(Currency from, Currency to, double amount) Conversion 
+        + fetchSupportedCodes() Map~String, String~
+    }
+
+
+    class CurrencyCodes {
+        <<Record>>
+        List~List~String~~ supported_codes
+        + asMap() Map~String, String~
     }
 
     class InputHandler {
-        - Scanner keyboard
+        - Scanner keyboard$
         - int MIN_OPTION$
         - int MAX_OPTION$
 
@@ -182,11 +184,11 @@ API_KEY = YourKey
 ## 🎞️ Screenshots <a name="id7"></a>
 
 <div align="center" style="border:1px solid #ccc; padding:10px;">
-  <img src="https://github.com/user-attachments/assets/b9601c0e-737c-4778-a764-cb1334b196c9" />
-  <img src="https://github.com/user-attachments/assets/be18a22f-c0cd-4561-b172-411d1bf65513" />
-  <img width="800px" src="https://github.com/user-attachments/assets/4ecbd466-a051-4349-b706-59f756d355f8" />
-  <img src="https://github.com/user-attachments/assets/2bc8e239-38ba-4953-b861-d58dbb1c9d53" />
-  <img src="https://github.com/user-attachments/assets/225cdee9-d62e-4346-8f85-ef403d5f4c88" />
+  <img alt="image1" src="https://github.com/user-attachments/assets/b9601c0e-737c-4778-a764-cb1334b196c9" />
+  <img alt="image2" src="https://github.com/user-attachments/assets/be18a22f-c0cd-4561-b172-411d1bf65513" />
+  <img alt="image3" width="800px" src="https://github.com/user-attachments/assets/4ecbd466-a051-4349-b706-59f756d355f8" />
+  <img alt="image4" src="https://github.com/user-attachments/assets/2bc8e239-38ba-4953-b861-d58dbb1c9d53" />
+  <img alt="image5" src="https://github.com/user-attachments/assets/225cdee9-d62e-4346-8f85-ef403d5f4c88" />
 </div>
 
 ---
