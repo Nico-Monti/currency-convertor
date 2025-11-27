@@ -98,7 +98,7 @@ classDiagram
     class CurrencyManager {
         - Map~String, String~ supportedCodes
         - Stack~Conversion~ conversions
-        - int MAX_HOUR$ = 6
+        - int MAX_HOUR$
         - String PATH_SUPPORTED_CODES$
         - String PATH_CONVERSIONS$
 
@@ -127,8 +127,8 @@ classDiagram
 
     class InputHandler {
         - Scanner keyboard
-        - int MIN_OPTION$ = 1
-        - int MAX_OPTION$ = 4
+        - int MIN_OPTION$
+        - int MAX_OPTION$
 
         + readMainOption() int 
         + readCurrency(CurrencyManager manager) String
