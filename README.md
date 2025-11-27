@@ -181,7 +181,13 @@ API_KEY = YourKey
 ---
 ## 🎞️ Screenshots <a name="id7"></a>
 
-
+<div align="center" style="border:1px solid #ccc; padding:10px;">
+  <img src="https://github.com/user-attachments/assets/b9601c0e-737c-4778-a764-cb1334b196c9" />
+  <img src="https://github.com/user-attachments/assets/be18a22f-c0cd-4561-b172-411d1bf65513" />
+  <img width="800px" src="https://github.com/user-attachments/assets/4ecbd466-a051-4349-b706-59f756d355f8" />
+  <img src="https://github.com/user-attachments/assets/2bc8e239-38ba-4953-b861-d58dbb1c9d53" />
+  <img src="https://github.com/user-attachments/assets/225cdee9-d62e-4346-8f85-ef403d5f4c88" />
+</div>
 
 ---
 ## ⚖️ License <a name="id8"></a>
