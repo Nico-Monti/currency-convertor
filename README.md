@@ -52,8 +52,10 @@ classDiagram
     
     CurrencyManager ..> ExchangeRateApiClient
     CurrencyManager ..> FileManager
-    CurrencyManager o-- Conversion
-    ExchangeRateApiClient -- CurrencyCodes
+    CurrencyManager o--  Conversion
+
+    ExchangeRateApiClient ..> CurrencyCodes
+
     Conversion *-- Currency
     
     class Menu {
